@@ -10,7 +10,10 @@ public class TerrainManagers : MonoBehaviour
     {
         Instance = this;
     }
-
+    /// <summary>
+    /// Saves the position of all trees to the main map
+    /// </summary>
+    /// <param name="map"></param>
     public void InitTerrain(Map map)
     {
         _terrain = Terrain.activeTerrain;

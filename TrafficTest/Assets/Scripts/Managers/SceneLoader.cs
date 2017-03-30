@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
+    //Index of the last loaded scene except main one
     private int _current;
 
     private void Awake()
@@ -34,7 +35,9 @@ public class SceneLoader : MonoBehaviour
     {
         Application.Quit();
     }
-
+    /// <summary>
+    /// Reload the current level
+    /// </summary>
     public void Reload()
     {
         var scene = SceneManager.GetActiveScene().buildIndex;

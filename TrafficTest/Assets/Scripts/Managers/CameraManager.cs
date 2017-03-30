@@ -5,17 +5,18 @@ public class CameraManager : MonoBehaviour
 {
     private Camera _camera;
     private Transform _transform;
-    private Quaternion _turnY;
+    //Rotation of the camera along the Y axis
+    private Quaternion _rotationY;
     public float CameraSpeed = 1;
+    //Reposes the position ray cast from center of the camera to the terrain
     private Vector3 _camPosCorrection;
 
     private void Awake()
     {
         _camera = GetComponent<Camera>();
         _transform = GetComponent<Transform>();
-        _turnY = Quaternion.Euler(0, _transform.rotation.eulerAngles.y, 0);
+        _rotationY = Quaternion.Euler(0, _transform.rotation.eulerAngles.y, 0);
         _camPosCorrection = CulcCamCorrection();
-
     }
 
     private void Update()
@@ -25,7 +26,7 @@ public class CameraManager : MonoBehaviour
         {
             var rotationHorizonyal = -Input.GetAxis("Mouse X") * Time.deltaTime * 50 * CameraSpeed;
             var rotationVertical = -Input.GetAxis("Mouse Y") * Time.deltaTime * 50 * CameraSpeed;
-            _transform.position += _turnY * new Vector3(rotationHorizonyal, 0, rotationVertical);
+            _transform.position += _rotationY * new Vector3(rotationHorizonyal, 0, rotationVertical);
         }
         if (Math.Abs(addSize) > float.Epsilon)
         {
@@ -36,6 +37,9 @@ public class CameraManager : MonoBehaviour
             ClampCamPos();
     }
 
+    /// <summary>
+    /// Limits movement camera in area of ​​the playing field
+    /// </summary>
     private void ClampCamPos()
     {
         var rayCenter = _transform.position + _camPosCorrection;
@@ -47,7 +51,9 @@ public class CameraManager : MonoBehaviour
         _transform.position += rayCenterClamp - rayCenter;
     }
 
-
+    /// <summary>
+    /// Culc position ray cast from center of the camera to the terrain
+    /// </summary>
     private Vector3 CulcCamCorrection()
     {
         var screenToWorldPoint = Camera.main.ScreenToWorldPoint(

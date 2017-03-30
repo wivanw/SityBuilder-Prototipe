@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class RefuelingMark : MonoBehaviour, IHexTrigger<Car>
 {
+    //List of all gas stations on this refueling station
     private GasStationMarker[][] _gasStations;
 
     private void Awake()
@@ -26,7 +27,11 @@ public class RefuelingMark : MonoBehaviour, IHexTrigger<Car>
         car.Move(enumerable);
         return true;
     }
-
+    /// <summary>
+    /// Creates a path to the nearest free gas stations
+    /// </summary>
+    /// <param name="car"></param>
+    /// <returns></returns>
     private IEnumerable<Hex> GetFreeSlot(Car car)
     {
         foreach (var stationArr in _gasStations)

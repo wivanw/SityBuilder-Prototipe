@@ -29,18 +29,25 @@ public class MapManager : MonoBehaviour
         //Draw(Map.HexUnitMap);
 #endif
     }
+    /// <summary>
+    /// Visualization road markings as well as planar graph of key points of the map
+    /// </summary>
 #if UNITY_EDITOR
     private void Update()
     {
         foreach (var edge in RoadController.Edges)
             Debug.DrawLine(new Vector3(edge.A.X, 0.02f, edge.A.Y) * 2 + new Vector3(1, 0, 1), new Vector3(edge.B.X, 0.02f, edge.B.Y) * 2 + new Vector3(1, 0, 1), Color.green);
-        Color[] colors = { Color.cyan, Color.black, Color.blue, Color.green, Color.magenta, Color.red, Color.white, Color.yellow };
-        var i = 0;
-        foreach (var nodes in CarsController.Dijkstras._vertices)
-            foreach (var node in nodes.Value)
-                Debug.DrawLine(Map.Layout.HexToVector3(nodes.Key), Map.Layout.HexToVector3(node), colors[i++ % colors.Length]);
+        //Color[] colors = { Color.cyan, Color.black, Color.blue, Color.green, Color.magenta, Color.red, Color.white, Color.yellow };
+        //var i = 0;
+        //foreach (var nodes in CarsController.Dijkstras._vertices)
+        //    foreach (var node in nodes.Value)
+        //        Debug.DrawLine(Map.Layout.HexToVector3(nodes.Key), Map.Layout.HexToVector3(node), colors[i++ % colors.Length]);
     }
 
+    /// <summary>
+    /// Visualizes draftings objects that are fed to entrance
+    /// </summary>
+    /// <param name="map">Object under visualization</param>
     public void Draw(Dictionary<Hex, HexUnit> map)
     {
         var hexPrefab = Resources.Load<GameObject>("Prefabs/Hex");
@@ -54,7 +61,13 @@ public class MapManager : MonoBehaviour
         }
     }
 #endif
-
+    /// <summary>
+    /// Implements functionality of movables objects and it turns out whether the moving succeeded
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="owner">Object sending interleaving request</param>
+    /// <param name="position">Desired position of mixing</param>
+    /// <returns></returns>
     public bool TryMove<T>(T owner, Hex position) where T : IHexOwner, IHexTrigger<T>, IMovables
     {
         if (!Map.HexUnitMap[position].Trigger(owner))
@@ -73,6 +86,12 @@ public class MapManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Replaces owner of a particular hex and removes traces of old one if any
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="owner">New owner of hex</param>
+    /// <param name="hex">The position of the operation being sold</param>
     private void ChangeHexOwner<T>(T owner, Hex hex) where T : IHexOwner, IHexTrigger<T>, IMovables
     {
         foreach (var draftHex in owner.BottomDraft.Select(draftHex => draftHex.Key))
@@ -85,6 +104,11 @@ public class MapManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Deletes triggers of the object from map
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="owner">Exposure object</param>
     public void RemoveTrigger<T>(T owner) where T : IHexOwner, IHexTrigger<T>, IMovables
     {
         foreach (var hexDraft in owner.BottomDraft)
